@@ -1,0 +1,29 @@
+<div class="w-screen h-screen bg-gray-50 flex flex-col">
+    <div class="w-full max-w-screen-lg flex-1 m-auto p-8 my-4 pb-16">
+        <div class="flex flex-col">
+            {% for message in current.messages %}
+            <div class="chat {% if message.role == 'user' %}chat-end{%else%}chat-start{% endif %}">
+                {%if message.role == 'assistant'%}
+                <div class="chat-image avatar">
+                    <div class="w-10 rounded-full">
+                        <img alt="asssistant icon"
+                            src="https://cdn.midjourney.com/5f5eb08f-9f06-48b7-9a28-b71b1157973c/0_2.webp" />
+                    </div>
+                </div>
+                {%endif%}
+                <div class="chat-bubble  {% if message.role == 'user' %}bg-sky-600{%endif%}">{{message.message}}</div>
+            </div>
+            {% endfor %}
+            {% if loading %}
+            <span class="loading loading-dots loading-lg"></span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<div class="fixed inset-x-0 bottom-0 bg-gray-200">
+    <form class="max-w-screen-lg m-auto w-full p-6 flex space-x-4 justify-center items-center" phx-submit="send">
+        <input id="message" name="message" type="text" autocomplete="off" autofocus class="rounded-md p-2 flex-1" />
+        <button class="bg-sky-600 text-white p-2 rounded-md {%if loading%}opacity-25{%endif%}">Send</button>
+    </form>
+</div>
+</div>

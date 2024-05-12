@@ -1,0 +1,44 @@
+[tool.poetry]
+name = "pyview-example-ai-chat"
+version = "0.0.1"
+description = "pyview example with ai chat"
+authors = [
+    "Larry Ogrodnek <ogrodnek@gmail.com>",
+]
+
+license = "MIT"
+readme = "readme.md"
+package-mode = false
+
+
+documentation = "https://github.com/pyview/pyview-example-ai-chat"
+homepage = "https://github.com/pyview/pyview-example-ai-chat"
+repository = "https://github.com/pyview/pyview-example-ai-chat"
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Typing :: Typed",
+]
+
+packages = [
+    { include = "pyview_example_ai_chat", from = "src" }
+]
+
+[tool.poetry.dependencies]
+python = ">=3.10.12,<3.12.0"
+pyview-web = "^0.0.7a0"
+openai = "^1.28.0"
+
+[tool.poetry.dev-dependencies]
+ruff = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
