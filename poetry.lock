@@ -283,13 +283,13 @@ files = [
 
 [[package]]
 name = "openai"
-version = "1.28.1"
+version = "1.30.1"
 description = "The official Python library for the openai API"
 optional = false
 python-versions = ">=3.7.1"
 files = [
-    {file = "openai-1.28.1-py3-none-any.whl", hash = "sha256:943e0d0d587b9a62f99bd3acbaf479ae5362986e5fff013f57b5b7bde85cce93"},
-    {file = "openai-1.28.1.tar.gz", hash = "sha256:8a3adbba16882434768d76fd3129fcc9b40ace98f8d55a6ddacfc05c4096ac30"},
+    {file = "openai-1.30.1-py3-none-any.whl", hash = "sha256:c9fb3c3545c118bbce8deb824397b9433a66d0d0ede6a96f7009c95b76de4a46"},
+    {file = "openai-1.30.1.tar.gz", hash = "sha256:4f85190e577cba0b066e1950b8eb9b11d25bc7ebcc43a86b326ce1bfa564ec74"},
 ]
 
 [package.dependencies]
@@ -397,13 +397,13 @@ files = [
 
 [[package]]
 name = "pyview-web"
-version = "0.0.7a0"
+version = "0.0.8a0"
 description = "LiveView in Python"
 optional = false
-python-versions = ">=3.9.16,<4.0.0"
+python-versions = "<4.0.0,>=3.9.16"
 files = [
-    {file = "pyview_web-0.0.7a0-py3-none-any.whl", hash = "sha256:946fcdb1e7c3eead3820da6806dd9842f5498abb9fc3d0bc3515fdaedfcbc8c0"},
-    {file = "pyview_web-0.0.7a0.tar.gz", hash = "sha256:14240a2aad2b892f67265cd16ee78fcac4fb67a7043020377f6a774c56a265df"},
+    {file = "pyview_web-0.0.8a0-py3-none-any.whl", hash = "sha256:4a23ec5f8d8a0176894e433feb32f3cecf28be57a1470d097dfdded5ae10c6af"},
+    {file = "pyview_web-0.0.8a0.tar.gz", hash = "sha256:fb28cd1f33ba723a7385d1d7d469fd23a9c4e38365dca3a54bdccc8411ab61e1"},
 ]
 
 [package.dependencies]
@@ -590,4 +590,4 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10.12,<3.12.0"
-content-hash = "5f6d9a2493dd2cb465a4e0891573d49fe502f34ec348a14c0773af070444db87"
+content-hash = "ca0d6cc8aacd0eb5d3b8c21a6b92552337e2b52cbbdf06a5e1d4a3832e51a257"
