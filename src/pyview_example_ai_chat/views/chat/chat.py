@@ -40,7 +40,7 @@ class ChatView(LiveView[ChatContext]):
             socket.context.current.messages.append(
                 ChatMessage(message=payload["message"][0])
             )
-            socket.schedule_info_once(InfoEvent("info"))
+            socket.schedule_info_once(InfoEvent("chat"))
 
     async def handle_info(self, event, socket: LiveViewSocket[ChatContext]):
         input = socket.context.current.chat_input
