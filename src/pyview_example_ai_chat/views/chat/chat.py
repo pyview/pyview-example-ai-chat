@@ -28,7 +28,7 @@ class ChatRecord:
 class ChatContext:
     current: ChatRecord = field(default_factory=ChatRecord)
     loading: bool = False
-
+    current_model: str = "gpt-3.5-turbo"
 
 class ChatView(LiveView[ChatContext]):
     async def mount(self, socket: LiveViewSocket[ChatContext], _session):
@@ -41,13 +41,15 @@ class ChatView(LiveView[ChatContext]):
                 ChatMessage(message=payload["message"][0])
             )
             socket.schedule_info_once(InfoEvent("chat"))
+        elif event == "change_model" and "model" in payload:
+            socket.context.current_model = payload["model"][0]
 
     async def handle_info(self, event, socket: LiveViewSocket[ChatContext]):
         input = socket.context.current.chat_input
 
         chat_completion = await client.chat.completions.create(
             messages=input,
-            model="gpt-3.5-turbo",
+            model=socket.context.current_model,
         )
 
         message = chat_completion.choices[0].message
