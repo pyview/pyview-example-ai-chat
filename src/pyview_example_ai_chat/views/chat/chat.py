@@ -6,6 +6,22 @@ from openai.types.chat import ChatCompletionMessageParam
 from typing import Literal, Iterable
 import os
 
+import markdown as md
+from markupsafe import Markup
+from pyview.vendor.ibis import filters
+
+
+@filters.register
+def markdown(text):
+    return Markup(
+        md.markdown(
+            text,
+            extensions=["fenced_code", "codehilite"],
+            extension_configs={"codehilite": {"css_class": "highlight"}},
+        )
+    )
+
+
 client = AsyncOpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 
@@ -13,6 +29,9 @@ client = AsyncOpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 class ChatMessage:
     message: str
     role: Literal["user", "assistant"] = "user"
+
+    def append(self, message: str):
+        self.message += message
 
 
 @dataclass
@@ -28,7 +47,16 @@ class ChatRecord:
 class ChatContext:
     current: ChatRecord = field(default_factory=ChatRecord)
     loading: bool = False
-    current_model: str = "gpt-3.5-turbo"
+    current_model: str = "gpt-4o-mini"
+    available_models: list[str] = field(
+        default_factory=lambda: [
+            "gpt-4o-mini",
+            "gpt-4o",
+            "gpt-4-turbo",
+            "gpt-3.5-turbo",
+        ]
+    )
+
 
 class ChatView(LiveView[ChatContext]):
     async def mount(self, socket: LiveViewSocket[ChatContext], _session):
@@ -45,16 +73,26 @@ class ChatView(LiveView[ChatContext]):
             socket.context.current_model = payload["model"][0]
 
     async def handle_info(self, event, socket: LiveViewSocket[ChatContext]):
+        if event.name == "response":
+            if event.payload:
+                current_message = socket.context.current.messages[-1]
+                current_message.append(event.payload)
+            return
+
         input = socket.context.current.chat_input
 
         chat_completion = await client.chat.completions.create(
             messages=input,
             model=socket.context.current_model,
+            stream=True,
         )
-
-        message = chat_completion.choices[0].message
 
         socket.context.current.messages.append(
-            ChatMessage(message=message.content or "", role=message.role)
+            ChatMessage(message="", role="assistant")
         )
+
+        async for chunk in chat_completion:
+            part = chunk.choices[0].delta.content
+            socket.schedule_info_once(InfoEvent("response", part))
+
         socket.context.loading = False

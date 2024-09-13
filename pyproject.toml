@@ -1,6 +1,5 @@
 [tool.poetry]
 name = "pyview-example-ai-chat"
-version = "0.0.1"
 description = "pyview example with ai chat"
 authors = [
     "Larry Ogrodnek <ogrodnek@gmail.com>",
@@ -9,7 +8,6 @@ authors = [
 license = "MIT"
 readme = "readme.md"
 package-mode = false
-
 
 documentation = "https://github.com/pyview/pyview-example-ai-chat"
 homepage = "https://github.com/pyview/pyview-example-ai-chat"
@@ -32,8 +30,10 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.10.12,<3.12.0"
-pyview-web = "^0.0.8a0"
-openai = "^1.28.0"
+openai = "^1.44.1"
+markdown = "^3.7"
+pygments = "^2.18.0"
+pyview-web = "^0.0.25"
 
 [tool.poetry.dev-dependencies]
 ruff = "*"
