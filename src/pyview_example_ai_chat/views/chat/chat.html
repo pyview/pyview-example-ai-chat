@@ -1,15 +1,26 @@
 <div class="w-screen h-screen bg-gray-50 flex">
     <!-- Sidebar for chat topics -->
     <div class="w-64 bg-gray-100 p-4 flex flex-col space-y-4">
+        <button style="align-self: flex-end" phx-click="new_chat" title="New Chat">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+            </svg>
+        </button>
+
+        {%if all_sessions %}
         <h2 class="font-bold text-lg">Previous Chats</h2>
         <ul class="space-y-2">
-            {% for topic in previous_chat_topics %}
-            <li>
-                <button class="text-left w-full bg-gray-200 p-2 rounded-md hover:bg-gray-300" phx-click="select_topic"
-                    value="{{ topic.id }}">{{ topic.title }}</button>
+            {% for session in all_sessions %}
+            <li class="chat_summary_link" {%if session.id == current_session.id %} aria-current="page" {% endif %}>
+                <a data-phx-link="patch" data-phx-link-state="push" href="/?topic_id={{ session.id }}">
+                    {{ session.summary || session.id | truncatechars(12,'') }}
+                </a>
             </li>
             {% endfor %}
         </ul>
+        {% endif %}
     </div>
 
     <!-- Main chat content -->
@@ -26,7 +37,7 @@
 
         <div id="message_content" class="w-full max-w-screen-lg flex-1 m-auto p-8 my-4 pb-24 overflow-y-auto">
             <div class="flex flex-col">
-                {% for message in current.messages %}
+                {% for message in messages %}
                 <div class="chat {% if message.role == 'user' %}chat-end{% else %}chat-start{% endif %}">
                     {% if message.role == 'assistant' %}
                     <div class="chat-image avatar self-start sticky top-0">
