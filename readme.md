@@ -2,7 +2,8 @@
 
 This is a quick example of a chatbot using [pyview](https://github.com/ogrodnek/pyview) and [openai](https://openai.com).
 
-It's not production-ready, it's just a simple example to show how to use pyview and openai together in a chat interface. Currently chats are not persisted, and it doesn't keep a history.
+- uses streaming responses from openai to the client
+- stores conversation locally in a sqlite database (including ai generated summary of conversation as a title)
 
 ![demo](docs/pyview-chat-example.gif)
 
