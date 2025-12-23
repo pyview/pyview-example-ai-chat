@@ -9,14 +9,14 @@ This is a quick example of a chatbot using [pyview](https://github.com/ogrodnek/
 
 ## Running
 
-This project uses [poetry](https://python-poetry.org/) for dependency management, and [just](https://github.com/casey/just) for task automation.
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management, and [just](https://github.com/casey/just) for task automation.
 
 You need an OpenAI API key to run this project. You can get one [here](https://platform.openai.com/signup).
 
 ### Install dependencies
 
 ```bash
-poetry install
+uv sync
 ```
 
 ### Set up environment variables

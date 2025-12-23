@@ -1,44 +1,45 @@
-[tool.poetry]
+[project]
 name = "pyview-example-ai-chat"
+version = "0.1.0"
 description = "pyview example with ai chat"
 authors = [
-    "Larry Ogrodnek <ogrodnek@gmail.com>",
+    { name = "Larry Ogrodnek", email = "ogrodnek@gmail.com" },
 ]
-
 license = "MIT"
 readme = "readme.md"
-package-mode = false
-
-documentation = "https://github.com/pyview/pyview-example-ai-chat"
-homepage = "https://github.com/pyview/pyview-example-ai-chat"
-repository = "https://github.com/pyview/pyview-example-ai-chat"
+requires-python = ">=3.14"
 
 classifiers = [
-  "Development Status :: 3 - Alpha",
-  "Intended Audience :: Developers",
-  "Operating System :: OS Independent",
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
-  "Typing :: Typed",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+    "Typing :: Typed",
 ]
 
-packages = [
-    { include = "pyview_example_ai_chat", from = "src" }
+dependencies = [
+    "openai>=1.44.1",
+    "markdown>=3.7",
+    "pygments>=2.18.0",
+    "pyview-web>=0.8.0a1",
+    "uvicorn>=0.40.0",
 ]
 
-[tool.poetry.dependencies]
-python = ">=3.10.12,<3.12.0"
-openai = "^1.44.1"
-markdown = "^3.7"
-pygments = "^2.18.0"
-pyview-web = "^0.0.25"
+[project.urls]
+Documentation = "https://github.com/pyview/pyview-example-ai-chat"
+Homepage = "https://github.com/pyview/pyview-example-ai-chat"
+Repository = "https://github.com/pyview/pyview-example-ai-chat"
 
-[tool.poetry.dev-dependencies]
-ruff = "*"
+[dependency-groups]
+dev = [
+    "ruff",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
+[tool.hatch.build.targets.wheel]
+packages = ["src/pyview_example_ai_chat"]

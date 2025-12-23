@@ -1,5 +1,6 @@
 from pyview import LiveView, LiveViewSocket
-from pyview.events import InfoEvent
+from pyview.events import InfoEvent, BaseEventHandler, event
+
 from dataclasses import dataclass, field
 from openai import AsyncOpenAI
 from pyview_example_ai_chat.views.chat.models.chat_message import (
@@ -38,29 +39,30 @@ class ChatContext:
 chat_storage: ChatStorage = SqliteChatStorage()
 
 
-class ChatView(LiveView[ChatContext]):
+class ChatView(BaseEventHandler, LiveView[ChatContext]):
     async def mount(self, socket: LiveViewSocket[ChatContext], _session):
         socket.context = ChatContext(all_sessions=chat_storage.list_chat_sessions())
 
-    async def handle_event(self, event, payload, socket: LiveViewSocket[ChatContext]):
-        if event == "send" and "message" in payload:
-            socket.context.loading = True
-            socket.context.current_session = chat_storage.save_chat_session(
-                socket.context.current_session
-            )
-            new_message = ChatMessage(message=payload["message"][0], role="user")
-            chat_storage.save_chat_message(
-                socket.context.current_session.id, new_message
-            )
 
-            socket.context.messages.append(new_message)
-            socket.schedule_info_once(InfoEvent("chat"))
+    @event("send")
+    async def handle_send(self, socket: LiveViewSocket[ChatContext], message: str):
+        socket.context.loading = True
+        socket.context.current_session = chat_storage.save_chat_session(
+            socket.context.current_session
+        )
+        new_message = ChatMessage(message=message, role="user")
+        chat_storage.save_chat_message(socket.context.current_session.id, new_message)
+        socket.context.messages.append(new_message)
+        socket.schedule_info_once(InfoEvent("chat"))
+    
+    @event("change_model")
+    async def handle_change_model(self, socket: LiveViewSocket[ChatContext], model: str):
+        socket.context.current_model = model
 
-        elif event == "change_model" and "model" in payload:
-            socket.context.current_model = payload["model"][0]
-        elif event == "new_chat":
-            socket.context = ChatContext(all_sessions=chat_storage.list_chat_sessions())
-            await socket.push_patch("/")
+    @event("new_chat")
+    async def handle_new_chat(self, socket: LiveViewSocket[ChatContext]):
+        socket.context = ChatContext(all_sessions=chat_storage.list_chat_sessions())
+        await socket.push_patch("/")
 
     async def handle_info(self, event, socket: LiveViewSocket[ChatContext]):
         if event.name == "summarize":
@@ -101,13 +103,9 @@ class ChatView(LiveView[ChatContext]):
         socket.schedule_info_once(InfoEvent("summarize"))
         socket.context.loading = False
 
-    async def handle_params(self, url, params, socket: LiveViewSocket[ChatContext]):
-        if "topic_id" in params:
-            topic_id = params["topic_id"][0]
+    async def handle_params(self, socket: LiveViewSocket[ChatContext], topic_id: str | None):
+        if topic_id:
             chat_session = chat_storage.get_chat_session(topic_id)
-            if not chat_session:
-                if socket.connected:
-                    await socket.push_patch("/", {})
-                return
-            socket.context.current_session, socket.context.messages = chat_session
-            socket.context.all_sessions = chat_storage.list_chat_sessions()
+            if chat_session:
+                socket.context.current_session, socket.context.messages = chat_session
+                socket.context.all_sessions = chat_storage.list_chat_sessions()
